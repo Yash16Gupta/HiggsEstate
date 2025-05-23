@@ -3,14 +3,13 @@
 
 import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { type User, onAuthStateChanged, signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/firebase';
-import type { Auth } from 'firebase/auth';
+import { type User, onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, type AuthProvider as FirebaseAuthProvider } from 'firebase/auth';
+import { auth, googleProvider } from '@/lib/firebase/firebase'; // Import googleProvider
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: typeof signInWithEmailAndPassword;
+  signInWithGoogle: () => Promise<any>; // Changed method name and signature
   signOutUser: () => Promise<void>;
 }
 
@@ -28,8 +27,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const signIn = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const signInWithGoogle = () => {
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider)
+      .catch((error) => {
+        setLoading(false);
+        // Handle Errors here.
+        console.error("Google Sign-In Error:", error);
+        // The error.code, error.message, error.customData.email might be useful
+        throw error; // Re-throw error to be caught by the caller
+      })
+      .finally(() => {
+        // setLoading(false) is handled by onAuthStateChanged or error handler
+      });
   };
 
   const signOutUser = async () => {
@@ -46,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOutUser }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOutUser }}>
       {children}
     </AuthContext.Provider>
   );
