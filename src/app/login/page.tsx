@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Added useEffect
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
@@ -35,31 +35,54 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, user, loading: authLoading } = useAuth(); // Get user and authLoading
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+
+  const redirectPath = searchParams.get('redirect') || '/agent/list-property';
+
+  // Redirect if user is already logged in and authorized
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push(redirectPath);
+    }
+  }, [user, authLoading, router, redirectPath]);
+
 
   const handleGoogleSignIn = async () => {
     setError(null);
     setIsLoading(true);
     try {
-      await signInWithGoogle();
-      toast({
-        title: "Login Successful",
-        description: "Welcome back, agent!",
-      });
-      const redirectPath = searchParams.get('redirect') || '/agent/list-property';
-      router.push(redirectPath);
+      const signedInUser = await signInWithGoogle();
+      if (signedInUser) { // Check if user object is returned (meaning they are authorized)
+        toast({
+          title: "Login Successful",
+          description: "Welcome back, agent!",
+        });
+        router.push(redirectPath);
+      } else {
+        // This case should ideally be handled by the error thrown in AuthContext
+        // if signInWithGoogle returns null due to non-authorization.
+        // However, adding a fallback.
+        setError("Login failed. You might not be an authorized agent.");
+         toast({
+          title: "Login Failed",
+          description: "You are not authorized to access this portal.",
+          variant: "destructive",
+        });
+      }
     } catch (err: any) {
       let errorMessage = "Failed to sign in with Google. Please try again.";
-      if (err.code === 'auth/popup-closed-by-user') {
+      if (err.message && err.message.includes("Access denied")) {
+        errorMessage = err.message;
+      } else if (err.code === 'auth/popup-closed-by-user') {
         errorMessage = "Sign-in cancelled. The Google sign-in popup was closed.";
       } else if (err.code === 'auth/cancelled-popup-request') {
         errorMessage = "Sign-in cancelled. Multiple popup requests were made.";
-      } else if (err.code) {
+      } else if (err.code) { // Catch other Firebase specific errors
         errorMessage = `Sign-in error: ${err.message} (Code: ${err.code})`;
-      } else if (err.message) {
+      } else if (err.message) { // Generic error message
         errorMessage = err.message;
       }
       
@@ -73,6 +96,24 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+  
+  // Prevent rendering login form if user is already logged in and authorized
+  if (authLoading) {
+    return (
+        <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+    );
+  }
+  if (user) { // If user exists (already logged in and authorized)
+    // This will be caught by useEffect and redirected, but good to prevent flash of login page
+    return ( 
+        <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
+            <p>Redirecting...</p>
+        </div>
+    );
+  }
+
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
@@ -105,7 +146,7 @@ export default function LoginPage() {
             )}
           </Button>
           <p className="text-xs text-muted-foreground text-center">
-            By signing in, you agree to our terms and conditions.
+            Only authorized agents can access this portal.
           </p>
         </CardContent>
       </Card>
