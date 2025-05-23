@@ -1,7 +1,8 @@
 
 "use client";
+import React, { type JSX } from 'react';
 import Link from 'next/link';
-import { Home, Building, Users, Tag, Briefcase, LogIn, LogOut, Loader2, Menu, ShieldCheck } from 'lucide-react';
+import { Home, Building, Users, Tag, Briefcase, LogIn, LogOut, Loader2, Menu, Mail } from 'lucide-react'; // Added Mail for Contact Us
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,7 +23,7 @@ const Header = () => {
         title: "Logged Out",
         description: "You have been successfully logged out.",
       });
-      router.push('/'); // Redirect to homepage after logout
+      router.push('/'); 
     } catch (error) {
       toast({
         title: "Logout Failed",
@@ -38,49 +39,71 @@ const Header = () => {
     { href: '/#commercial', label: 'Commercial', icon: <Building className="h-5 w-5" /> },
     { href: '/sell', label: 'Sell Property', icon: <Tag className="h-5 w-5" /> },
     { href: '/#agents', label: 'Meet Our Agents', icon: <Users className="h-5 w-5" /> },
+    { href: '/contact', label: 'Contact Us', icon: <Mail className="h-5 w-5" /> }, // Added Contact Us
   ];
   
-  const getAgentPortalLink = (isMobile = false) => {
-    const buttonSize = isMobile ? "default" : "sm";
+  const getAgentPortalLink = (isMobile = false): JSX.Element | JSX.Element[] => {
     const buttonVariant = isMobile ? "ghost" : "ghost";
-    const className = isMobile ? "w-full justify-start text-base py-3" : "text-sm font-medium text-foreground/80 hover:text-foreground px-3 py-2";
+    const baseButtonClasses = isMobile ? "w-full justify-start text-base py-3 flex items-center" : "text-sm font-medium text-foreground/80 hover:text-foreground px-3 py-2";
+    const iconClasses = isMobile ? "mr-2 h-4 w-4" : "mr-1 h-4 w-4";
 
     if (loading) {
-      return (
-        <Button variant={buttonVariant} size={buttonSize} disabled className={`${className} ${isMobile ? 'flex items-center' : ''}`}>
-          <Loader2 className={`h-4 w-4 mr-2 animate-spin ${isMobile ? 'mr-2' : 'mr-1'}`} />
+      const loadingButton = (
+        <Button variant={buttonVariant} size={isMobile ? "default" : "sm"} disabled className={`${baseButtonClasses}`}>
+          <Loader2 className={`${iconClasses} animate-spin`} />
           <span>Loading...</span>
         </Button>
       );
+      return isMobile ? [loadingButton] : loadingButton;
     } else if (user) {
-      return (
-        <>
-          <Button variant={buttonVariant} size={buttonSize} asChild className={`${className} ${isMobile ? 'flex items-center' : ''}`}>
-            <Link href="/agent/list-property">
-              <Briefcase className={`h-4 w-4 ${isMobile ? 'mr-2' : 'mr-1'}`} />
-              <span>Agent Portal</span>
-            </Link>
+      const agentPortalLink = (
+        <Link href="/agent/list-property" passHref legacyBehavior>
+          <Button variant={buttonVariant} size={isMobile ? "default" : "sm"} asChild={!isMobile} className={`${baseButtonClasses} ${isMobile ? '' : 'inline-flex'}`}>
+            {isMobile ? (
+              <>
+                <Briefcase className={iconClasses} /> Agent Portal
+              </>
+            ) : (
+              <a><Briefcase className={iconClasses} />Agent Portal</a>
+            )}
           </Button>
-          <Button 
+        </Link>
+      );
+      const logoutButton = (
+         <Button 
             variant={isMobile ? "outline" : "outline"} 
             size={isMobile ? "default" : "sm"} 
             onClick={handleLogout} 
-            className={`${isMobile ? 'w-full justify-start text-base py-3 mt-2' : 'ml-2'} ${isMobile ? 'flex items-center' : ''}`}
+            className={`${baseButtonClasses} ${isMobile ? 'mt-2' : 'ml-2'}`}
           >
-            <LogOut className={`h-4 w-4 ${isMobile ? 'mr-2' : 'mr-1'}`} />
+            <LogOut className={iconClasses} />
             Logout
           </Button>
-        </>
       );
+      
+      if (isMobile) {
+        return [
+          <SheetClose asChild key="agent-portal-mobile">{agentPortalLink}</SheetClose>,
+          <SheetClose asChild key="logout-mobile">{logoutButton}</SheetClose>
+        ];
+      }
+      return <>{agentPortalLink}{logoutButton}</>;
+
     } else {
-      return (
-        <Button variant={buttonVariant} size={buttonSize} asChild className={`${className} ${isMobile ? 'flex items-center' : ''}`}>
-          <Link href="/login">
-            <LogIn className={`h-4 w-4 ${isMobile ? 'mr-2' : 'mr-1'}`} />
-            <span>Agent Login</span>
-          </Link>
-        </Button>
+      const loginLink = (
+        <Link href="/login" passHref legacyBehavior>
+           <Button variant={buttonVariant} size={isMobile ? "default" : "sm"} asChild={!isMobile} className={`${baseButtonClasses} ${isMobile ? '' : 'inline-flex'}`}>
+             {isMobile ? (
+                <>
+                  <LogIn className={iconClasses} /> Agent Login
+                </>
+             ) : (
+                <a><LogIn className={iconClasses} />Agent Login</a>
+             )}
+          </Button>
+        </Link>
       );
+      return isMobile ? [<SheetClose asChild key="login-mobile">{loginLink}</SheetClose>] : loginLink;
     }
   };
 
@@ -88,19 +111,18 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/#hero" className="mr-6 flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8 text-primary">
-            <path d="M12 2L2 7l10 5 10-5L12 2zm0 7.5L4.5 14H12v5.5l7.5-3.9V14H12V9.5zM4 15l8 4 8-4v-2.1l-8 4-8-4V15z"/>
-          </svg>
-          <span className="font-bold text-xl sm:inline-block">Higgs Estate</span>
-        </Link>
+          <Link href="/#hero" className="mr-6 flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8 text-primary">
+              <path d="M12 2L2 7l10 5 10-5L12 2zm0 7.5L4.5 14H12v5.5l7.5-3.9V14H12V9.5zM4 15l8 4 8-4v-2.1l-8 4-8-4V15z"/>
+            </svg>
+            <span className="font-bold text-xl sm:inline-block">Higgs Estate</span>
+          </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
           {navItems.map((item) => (
             <Button key={item.label} variant="ghost" asChild className="text-sm font-medium text-foreground/80 hover:text-foreground px-3 py-2">
               <Link href={item.href}>
-                {/* {item.icon} // Desktop icons can be added back if desired */}
                 <span className="ml-1">{item.label}</span>
               </Link>
             </Button>
@@ -121,16 +143,14 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[340px] p-0">
                 <div className="p-6">
-                  <Link href="/#hero" className="flex items-center space-x-2 mb-6">
-                     <SheetClose asChild>
-                      <>
+                 <SheetClose asChild>
+                    <Link href="/#hero" className="flex items-center space-x-2 mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 text-primary">
                           <path d="M12 2L2 7l10 5 10-5L12 2zm0 7.5L4.5 14H12v5.5l7.5-3.9V14H12V9.5zM4 15l8 4 8-4v-2.1l-8 4-8-4V15z"/>
                         </svg>
                         <span className="font-bold text-lg">Higgs Estate</span>
-                      </>
-                     </SheetClose>
-                  </Link>
+                    </Link>
+                  </SheetClose>
                 </div>
                 <Separator />
                 <nav className="flex flex-col p-4 space-y-1">
@@ -145,9 +165,13 @@ const Header = () => {
                     </SheetClose>
                   ))}
                   <Separator className="my-3" />
-                  <SheetClose asChild>
-                     <div>{getAgentPortalLink(true)}</div>
-                  </SheetClose>
+                  {/* Process output of getAgentPortalLink for mobile */}
+                  {React.Children.toArray((getAgentPortalLink(true) as JSX.Element | JSX.Element[]))
+                    .map((element, index) => (
+                    // Each element from getAgentPortalLink(true) is already wrapped in SheetClose asChild if needed
+                    // We just need to render it and provide a key for the .map()
+                    React.cloneElement(element as React.ReactElement, { key: `agent-action-${index}` })
+                  ))}
                 </nav>
               </SheetContent>
             </Sheet>
