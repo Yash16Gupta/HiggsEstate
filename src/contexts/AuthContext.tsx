@@ -6,16 +6,18 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { type User, onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase/firebase';
 
-// --- Allowlist removed ---
-// const AUTHORIZED_AGENT_EMAILS = [
-//   "yashgupta16052005@gmail.com",
-// ];
-// --- End of allowlist removal ---
+// Define the list of authorized agent emails
+// IMPORTANT: YOU MUST UPDATE THIS LIST WITH YOUR ACTUAL AGENT EMAILS
+const AUTHORIZED_AGENT_EMAILS = [
+  "agent1@example.com", // Replace with actual agent email
+  "agent2@example.com", // Replace with actual agent email
+  // Add more authorized agent emails here
+];
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<User | null>; // Return User or null
+  signInWithGoogle: () => Promise<User | null>;
   signOutUser: () => Promise<void>;
 }
 
@@ -27,9 +29,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser); // Directly set user without checking allowlist
+      // If a user is authenticated and their email is in the allowlist, set them as the current user.
+      // Otherwise, ensure user is null. This also handles the case where a user was previously
+      // logged in but their email is no longer in the allowlist (e.g., if the list changes).
+      if (currentUser && currentUser.email && AUTHORIZED_AGENT_EMAILS.includes(currentUser.email)) {
+        setUser(currentUser);
       } else {
+        // If there's a current user but they are not authorized, sign them out.
+        if (currentUser) {
+          firebaseSignOut(auth); // Sign out unauthorized user
+        }
         setUser(null);
       }
       setLoading(false);
@@ -44,23 +53,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const signedInUser = result.user;
 
       if (!signedInUser || !signedInUser.email) {
-        // It's still good practice to sign out if essential user info is missing
         await firebaseSignOut(auth);
         throw new Error("Could not retrieve user information from Google Sign-In.");
       }
-      
-      // No longer checking against an allowlist.
-      // setUser will be handled by onAuthStateChanged.
-      // setLoading(false) will also be handled by onAuthStateChanged.
-      return signedInUser; 
-    } catch (error: any) {
-      setLoading(false);
-      // Sign out in case of any other error during the process if a user was partially authenticated
-      if (auth.currentUser) {
-         await firebaseSignOut(auth);
+
+      if (AUTHORIZED_AGENT_EMAILS.includes(signedInUser.email)) {
+        // User email is in the allowlist.
+        // onAuthStateChanged will handle setting the user and loading state.
+        return signedInUser;
+      } else {
+        // User email is NOT in the allowlist. Sign them out and throw an error.
+        await firebaseSignOut(auth);
+        const authError = new Error("Access denied. This email is not authorized for agent access.");
+        // Add a property to easily identify this specific error type
+        (authError as any).code = 'auth/unauthorized-agent'; 
+        throw authError;
       }
+    } catch (error: any) {
+      // Ensure loading is false and user is null if any error occurs during sign-in.
+      // This also handles the case where firebaseSignOut might be called above.
+      setLoading(false); 
+      setUser(null); 
       console.error("Google Sign-In Error:", error);
-      throw error; // Re-throw error to be caught by the caller
+      throw error; 
     }
   };
 
@@ -71,6 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null); 
     } catch (error) {
       console.error("Error signing out: ", error);
+      // Even if sign-out fails, ensure local state is cleared
+      setUser(null);
     } finally {
       setLoading(false);
     }

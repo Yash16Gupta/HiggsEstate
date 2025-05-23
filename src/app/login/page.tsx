@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from 'react'; // Added useEffect
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ const GoogleIcon = () => (
 
 
 export default function LoginPage() {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // For general errors displayed on page
   const [isLoading, setIsLoading] = useState(false);
   const { signInWithGoogle, user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -54,15 +54,16 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const signedInUser = await signInWithGoogle();
-      if (signedInUser) {
+      if (signedInUser) { // User is authorized and signed in
         toast({
           title: "Login Successful",
-          description: "Welcome!", // Generic welcome message
+          description: "Welcome!",
         });
         router.push(redirectPath);
       } else {
-        // This case might occur if signInWithGoogle returns null for other reasons
-        // (e.g. user closes popup before completion, though that's often an error)
+        // This case should ideally not be reached if signInWithGoogle throws for unauthorized
+        // or returns null for other failures handled by it.
+        // However, as a fallback:
         setError("Login failed. Please try again.");
          toast({
           title: "Login Failed",
@@ -72,23 +73,44 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       let errorMessage = "Failed to sign in with Google. Please try again.";
-      // Removed specific "Access denied" check as it's no longer applicable
-      if (err.code === 'auth/popup-closed-by-user') {
+      
+      if (err.code === 'auth/unauthorized-agent') {
+        errorMessage = err.message; // Use the message from AuthContext
+         toast({
+          title: "Access Denied",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else if (err.code === 'auth/popup-closed-by-user') {
         errorMessage = "Sign-in cancelled. The Google sign-in popup was closed.";
+         toast({ // Toast for user-cancelled actions might be optional or less severe
+          title: "Sign-in Cancelled",
+          description: "The Google sign-in popup was closed.",
+          variant: "default",
+        });
       } else if (err.code === 'auth/cancelled-popup-request') {
         errorMessage = "Sign-in cancelled. Multiple popup requests were made.";
-      } else if (err.code) { 
-        errorMessage = `Sign-in error: ${err.message} (Code: ${err.code})`;
-      } else if (err.message) { 
+         toast({
+          title: "Sign-in Cancelled",
+          description: "Please try signing in again.",
+          variant: "default",
+        });
+      } else if (err.message) { // General error message
         errorMessage = err.message;
+         toast({
+          title: "Login Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else { // Fallback toast for unknown errors
+         toast({
+          title: "Login Failed",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
       }
       
-      setError(errorMessage);
-      toast({
-        title: "Login Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      setError(errorMessage); // Set error for on-page display if needed, though toasts are primary
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +123,7 @@ export default function LoginPage() {
         </div>
     );
   }
+  // If user is already logged in (and authorized by AuthContext's onAuthStateChanged), redirect
   if (user) { 
     return ( 
         <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
@@ -118,7 +141,7 @@ export default function LoginPage() {
           <CardDescription>Sign in with your Google account to access the Higgs Estate agent features.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {error && (
+          {error && !isLoading && ( // Only show page error if not loading (toasts handle loading feedback)
             <p className="text-sm text-center text-destructive bg-destructive/10 p-3 rounded-md">{error}</p>
           )}
           <Button 
@@ -140,7 +163,9 @@ export default function LoginPage() {
               </>
             )}
           </Button>
-          {/* Removed the "Only authorized agents can access this portal." message as it's no longer applicable */}
+          <p className="text-xs text-muted-foreground text-center">
+            Only authorized agents can access this portal.
+          </p>
         </CardContent>
       </Card>
     </div>
