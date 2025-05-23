@@ -6,6 +6,7 @@ import type { Property } from '@/data/mockProperties';
 import HeroSection from '@/components/sections/HeroSection';
 import PropertySection from '@/components/sections/PropertySection';
 import KnowYourAgentsSection from '@/components/sections/KnowYourAgentsSection';
+import SellPropertyCtaSection from '@/components/sections/SellPropertyCtaSection';
 import AiRecommendationsDialog from '@/components/property/AiRecommendationsDialog';
 
 interface HomePageClientProps {
@@ -43,6 +44,7 @@ const HomePageClient = ({ residentialProperties, commercialProperties }: HomePag
         properties={commercialProperties}
         onSelectProperty={handleSelectPropertyForAi}
       />
+      <SellPropertyCtaSection />
       <KnowYourAgentsSection />
       {/* Future sections like About Us, Contact can be added here */}
       {/* 

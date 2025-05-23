@@ -10,6 +10,7 @@ const Header = () => {
     { href: '/#residential', label: 'Residential', icon: <Home className="h-4 w-4" />, type: 'anchor' },
     { href: '/#commercial', label: 'Commercial', icon: <Building className="h-4 w-4" />, type: 'anchor' },
     { href: '/sell', label: 'Sell Property', icon: <Tag className="h-4 w-4" />, type: 'link' },
+    { href: '/#agents', label: 'Meet Our Agents', icon: <Users className="h-4 w-4" />, type: 'anchor' },
     // { href: '#about', label: 'About Us', icon: <Users className="h-4 w-4" /> },
     // { href: '#contact', label: 'Contact', icon: <Mail className="h-4 w-4" /> },
   ];
