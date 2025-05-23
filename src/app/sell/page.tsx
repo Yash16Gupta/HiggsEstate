@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, TrendingUp, Users } from 'lucide-react';
@@ -36,8 +37,8 @@ export default function SellPage() {
           </p>
           <div className="mt-10">
             <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-shadow">
-              {/* This could link to a contact form or a more detailed listing form page in the future */}
-              <Link href="/contact">Get Started Today</Link>
+              {/* This link now scrolls to the contact section on this page */}
+              <Link href="#list-property-contact">Get Started Today</Link>
             </Button>
           </div>
         </div>
@@ -73,7 +74,7 @@ export default function SellPage() {
       </section>
 
       {/* Placeholder for a simplified listing form or detailed CTA */}
-      <section className="py-16 md:py-24 bg-secondary/30">
+      <section id="list-property-contact" className="py-16 md:py-24 bg-secondary/30 scroll-mt-20"> {/* Added id and scroll-mt for better scroll position */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-6">
             Ready to List Your Property?
@@ -92,7 +93,7 @@ export default function SellPage() {
               <div className="aspect-w-16 aspect-h-9 rounded-md overflow-hidden my-4">
                 <Image src="https://placehold.co/600x300.png" alt="Real estate agent discussion" layout="responsive" width={600} height={300} data-ai-hint="meeting discussion"/>
               </div>
-              <Button className="w-full" size="lg">
+              <Button className="w-full" size="lg" asChild>
                 <Link href="mailto:sell@higgsestate.com?subject=Property%20Listing%20Inquiry">
                   Email Our Seller Team
                 </Link>
