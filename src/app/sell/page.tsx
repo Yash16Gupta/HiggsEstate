@@ -85,24 +85,11 @@ export default function SellPage() {
             Our team is eager to assist you. Provide some basic information, and we'll get in touch to discuss your property and how we can help you achieve your selling goals.
           </p>
           <Card className="max-w-lg mx-auto text-left p-6 sm:p-8 shadow-xl">
-            <CardTitle className="text-center mb-6 text-xl">Contact Us About Selling</CardTitle>
-            {/* In a real application, this would be a form. For now, a placeholder. */}
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                To initiate the selling process, please reach out to our dedicated seller support team. 
-                We will guide you through the necessary steps, including property valuation, marketing strategy, and listing preparation.
-              </p>
-              <div className="aspect-w-16 aspect-h-9 rounded-md overflow-hidden my-4">
-                <Image src="https://placehold.co/600x300.png" alt="Real estate agent discussion" layout="responsive" width={600} height={300} data-ai-hint="meeting discussion"/>
-              </div>
-              <Button className="w-full" size="lg" asChild>
-                <Link href="mailto:sell@higgsestate.com?subject=Property%20Listing%20Inquiry">
-                  Email Our Seller Team
-                </Link>
+            <CardTitle className="text-center mb-6 text-xl">Click below to get started!</CardTitle>
+            <div className="flex justify-center">
+              <Button size="lg" asChild>
+                <Link href="/contact">Contact Details</Link>
               </Button>
-              <p className="text-xs text-muted-foreground text-center pt-2">
-                Or call us at (555) 123-4567
-              </p>
             </div>
           </Card>
         </div>
