@@ -3,13 +3,12 @@ import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth, GoogleAuthProvider } from "firebase/auth"; // Added GoogleAuthProvider
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyB7U7l77GCjF9m3q8Jp8ZBVQ0z34CQL30E",
+  authDomain: "higgs-estate.firebaseapp.com",
+  projectId: "higgs-estate",
+  storageBucket: "higgs-estate.firebasestorage.app",
+  messagingSenderId: "947433875880",
+  appId: "1:947433875880:web:66e9ad1ce5d1017218d59d"
 };
 
 // Initialize Firebase
