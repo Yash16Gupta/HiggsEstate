@@ -1,7 +1,9 @@
+
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { AuthProvider } from '@/contexts/AuthContext'; // Import AuthProvider
 import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -35,12 +37,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <Toaster />
+          <AuthProvider> {/* Wrap with AuthProvider */}
+            <Header />
+            <main className="flex-grow">{children}</main> {/* Ensure main content can grow */}
+            <Footer />
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

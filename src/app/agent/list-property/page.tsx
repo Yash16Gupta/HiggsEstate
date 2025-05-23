@@ -27,6 +27,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+// Removed useAuth import as layout handles auth guard
+// import { useAuth } from "@/contexts/AuthContext"; 
 
 const propertyListingSchema = z.object({
   name: z.string().min(5, { message: "Property name must be at least 5 characters." }),
@@ -47,6 +49,7 @@ type PropertyListingFormValues = z.infer<typeof propertyListingSchema>;
 export default function ListPropertyPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const { user } = useAuth(); // User object can be used for displaying user info or role-based UI
 
   const form = useForm<PropertyListingFormValues>({
     resolver: zodResolver(propertyListingSchema),
