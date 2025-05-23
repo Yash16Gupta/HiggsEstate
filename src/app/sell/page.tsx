@@ -37,7 +37,7 @@ export default function SellPage() {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-shadow">
-              <Link href="#why-sell-with-us-section">Why Sell With Us</Link>
+              <Link href="#why-sell-with-us-section">Why Us</Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="shadow-lg hover:shadow-xl transition-shadow">
               <Link href="#list-property-contact">Contact Us</Link>
