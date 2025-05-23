@@ -35,17 +35,19 @@ export default function SellPage() {
           <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
             Ready to take the next step? Partner with us to achieve the best possible outcome for your property sale.
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-shadow">
-              {/* This link now scrolls to the contact section on this page */}
-              <Link href="#list-property-contact">Get Started Today</Link>
+              <Link href="#why-sell-with-us-section">Why Sell With Us</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="shadow-lg hover:shadow-xl transition-shadow">
+              <Link href="#list-property-contact">Contact Us</Link>
             </Button>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section id="why-sell-with-us-section" className="py-16 md:py-24 bg-background scroll-mt-20"> {/* Added id and scroll-mt */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
@@ -74,7 +76,7 @@ export default function SellPage() {
       </section>
 
       {/* Placeholder for a simplified listing form or detailed CTA */}
-      <section id="list-property-contact" className="py-16 md:py-24 bg-secondary/30 scroll-mt-20"> {/* Added id and scroll-mt for better scroll position */}
+      <section id="list-property-contact" className="py-16 md:py-24 bg-secondary/30 scroll-mt-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-6">
             Ready to List Your Property?
