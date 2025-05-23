@@ -9,8 +9,7 @@ import { auth, googleProvider } from '@/lib/firebase/firebase';
 // Define the list of authorized agent emails
 // IMPORTANT: YOU MUST UPDATE THIS LIST WITH YOUR ACTUAL AGENT EMAILS
 const AUTHORIZED_AGENT_EMAILS = [
-  "agent1@example.com", // Replace with actual agent email
-  "agent2@example.com", // Replace with actual agent email
+  "yashgupta16052005@gmail.com" // Replace with actual agent email
   // Add more authorized agent emails here
 ];
 
