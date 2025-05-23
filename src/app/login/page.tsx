@@ -35,14 +35,13 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { signInWithGoogle, user, loading: authLoading } = useAuth(); // Get user and authLoading
+  const { signInWithGoogle, user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const redirectPath = searchParams.get('redirect') || '/agent/list-property';
 
-  // Redirect if user is already logged in and authorized
   useEffect(() => {
     if (!authLoading && user) {
       router.push(redirectPath);
@@ -55,34 +54,32 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const signedInUser = await signInWithGoogle();
-      if (signedInUser) { // Check if user object is returned (meaning they are authorized)
+      if (signedInUser) {
         toast({
           title: "Login Successful",
-          description: "Welcome back, agent!",
+          description: "Welcome!", // Generic welcome message
         });
         router.push(redirectPath);
       } else {
-        // This case should ideally be handled by the error thrown in AuthContext
-        // if signInWithGoogle returns null due to non-authorization.
-        // However, adding a fallback.
-        setError("Login failed. You might not be an authorized agent.");
+        // This case might occur if signInWithGoogle returns null for other reasons
+        // (e.g. user closes popup before completion, though that's often an error)
+        setError("Login failed. Please try again.");
          toast({
           title: "Login Failed",
-          description: "You are not authorized to access this portal.",
+          description: "Could not complete sign-in.",
           variant: "destructive",
         });
       }
     } catch (err: any) {
       let errorMessage = "Failed to sign in with Google. Please try again.";
-      if (err.message && err.message.includes("Access denied")) {
-        errorMessage = err.message;
-      } else if (err.code === 'auth/popup-closed-by-user') {
+      // Removed specific "Access denied" check as it's no longer applicable
+      if (err.code === 'auth/popup-closed-by-user') {
         errorMessage = "Sign-in cancelled. The Google sign-in popup was closed.";
       } else if (err.code === 'auth/cancelled-popup-request') {
         errorMessage = "Sign-in cancelled. Multiple popup requests were made.";
-      } else if (err.code) { // Catch other Firebase specific errors
+      } else if (err.code) { 
         errorMessage = `Sign-in error: ${err.message} (Code: ${err.code})`;
-      } else if (err.message) { // Generic error message
+      } else if (err.message) { 
         errorMessage = err.message;
       }
       
@@ -97,7 +94,6 @@ export default function LoginPage() {
     }
   };
   
-  // Prevent rendering login form if user is already logged in and authorized
   if (authLoading) {
     return (
         <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
@@ -105,8 +101,7 @@ export default function LoginPage() {
         </div>
     );
   }
-  if (user) { // If user exists (already logged in and authorized)
-    // This will be caught by useEffect and redirected, but good to prevent flash of login page
+  if (user) { 
     return ( 
         <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
             <p>Redirecting...</p>
@@ -119,8 +114,8 @@ export default function LoginPage() {
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-[calc(100vh-16rem)]">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Agent Login</CardTitle>
-          <CardDescription>Sign in with your Google account to access the Higgs Estate agent portal.</CardDescription>
+          <CardTitle className="text-3xl font-bold">Agent Portal Login</CardTitle>
+          <CardDescription>Sign in with your Google account to access the Higgs Estate agent features.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {error && (
@@ -145,9 +140,7 @@ export default function LoginPage() {
               </>
             )}
           </Button>
-          <p className="text-xs text-muted-foreground text-center">
-            Only authorized agents can access this portal.
-          </p>
+          {/* Removed the "Only authorized agents can access this portal." message as it's no longer applicable */}
         </CardContent>
       </Card>
     </div>
