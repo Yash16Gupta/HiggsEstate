@@ -1,6 +1,7 @@
+
 "use client";
 import Link from 'next/link';
-import { Home, Building, Users, Mail, Tag } from 'lucide-react';
+import { Home, Building, Users, Mail, Tag, Briefcase } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +12,7 @@ const Header = () => {
     { href: '/#commercial', label: 'Commercial', icon: <Building className="h-4 w-4" />, type: 'anchor' },
     { href: '/sell', label: 'Sell Property', icon: <Tag className="h-4 w-4" />, type: 'link' },
     { href: '/#agents', label: 'Meet Our Agents', icon: <Users className="h-4 w-4" />, type: 'anchor' },
+    { href: '/agent/list-property', label: 'Agent Portal', icon: <Briefcase className="h-4 w-4" />, type: 'link' },
     // { href: '#about', label: 'About Us', icon: <Users className="h-4 w-4" /> },
     // { href: '#contact', label: 'Contact', icon: <Mail className="h-4 w-4" /> },
   ];
