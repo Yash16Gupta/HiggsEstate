@@ -29,6 +29,34 @@ const mockResidentialProperties: Property[] = [
     amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
   },
   {
+    id: 'res1',
+    name: 'Sunnyvale Family Home1111',
+    description: 'A beautiful 4-bedroom, 3-bathroom family home in the heart of Sunnyvale. Features a large backyard, modern kitchen, and spacious living areas. Perfect for growing families.',
+    price: 1200000,
+    location: 'Sunnyvale, CA',
+    type: 'residential',
+    imageUrls: ['https://placehold.co/600x400.png?text=Sunnyvale+Home+1', 'https://placehold.co/600x400.png?text=Sunnyvale+Home+2'],
+    sqft: 2200,
+    bedrooms: 4,
+    bathrooms: 3,
+    contactInfo: 'agent@higgsestate.com',
+    amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
+  },
+  {
+    id: 'res1',
+    name: 'Sunnyvale Family Home222',
+    description: 'A beautiful 4-bedroom, 3-bathroom family home in the heart of Sunnyvale. Features a large backyard, modern kitchen, and spacious living areas. Perfect for growing families.',
+    price: 1200000,
+    location: 'Sunnyvale, CA',
+    type: 'residential',
+    imageUrls: ['https://placehold.co/600x400.png?text=Sunnyvale+Home+1', 'https://placehold.co/600x400.png?text=Sunnyvale+Home+2'],
+    sqft: 2200,
+    bedrooms: 4,
+    bathrooms: 3,
+    contactInfo: 'agent@higgsestate.com',
+    amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
+  },
+  {
     id: 'res2',
     name: 'Downtown Loft Apartment',
     description: 'Chic 2-bedroom loft in a vibrant downtown location. Open concept living, exposed brick, and stunning city views. Close to restaurants, shops, and public transport.',
@@ -82,6 +110,18 @@ const mockCommercialProperties: Property[] = [
     sqft: 25000,
     contactInfo: 'commercial@higgsestate.com',
     amenities: ['Conference Rooms', 'High-Speed Internet', 'Covered Parking']
+  },
+  {
+    id: 'com3',
+    name: 'Warehouse & Logistics Hub',
+    description: 'Large warehouse with loading docks and excellent logistics access. High ceilings, ample storage space, and office area. Ideal for distribution or manufacturing.',
+    price: 5000000, // Or lease price
+    location: 'Industrial Zone, Port City',
+    type: 'commercial',
+    imageUrls: ['https://placehold.co/600x400.png?text=Warehouse+1', 'https://placehold.co/600x400.png?text=Warehouse+2'],
+    sqft: 50000,
+    contactInfo: 'commercial@higgsestate.com',
+    amenities: ['Loading Docks', 'High Ceilings', 'Office Space']
   },
   {
     id: 'com3',
