@@ -1,5 +1,4 @@
-
-"use client";
+'use client';
 
 import { useState } from 'react';
 import type { Property } from '@/data/mockProperties';
@@ -12,9 +11,14 @@ import AiRecommendationsDialog from '@/components/property/AiRecommendationsDial
 interface HomePageClientProps {
   residentialProperties: Property[];
   commercialProperties: Property[];
+  preRentedProperties: Property[];
 }
 
-const HomePageClient = ({ residentialProperties, commercialProperties }: HomePageClientProps) => {
+const HomePageClient = ({
+  residentialProperties,
+  commercialProperties,
+  preRentedProperties,
+}: HomePageClientProps) => {
   const [selectedPropertyForAi, setSelectedPropertyForAi] = useState<Property | null>(null);
   const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
 
@@ -25,8 +29,7 @@ const HomePageClient = ({ residentialProperties, commercialProperties }: HomePag
 
   const handleCloseAiDialog = () => {
     setIsAiDialogOpen(false);
-    // Delay clearing to allow dialog to animate out
-    setTimeout(() => setSelectedPropertyForAi(null), 300); 
+    setTimeout(() => setSelectedPropertyForAi(null), 300);
   };
 
   return (
@@ -44,19 +47,15 @@ const HomePageClient = ({ residentialProperties, commercialProperties }: HomePag
         properties={commercialProperties}
         onSelectProperty={handleSelectPropertyForAi}
       />
+      <PropertySection
+        id="prerented"
+        title="PreRented Properties"
+        properties={preRentedProperties}
+        onSelectProperty={handleSelectPropertyForAi}
+      />
       <SellPropertyCtaSection />
       <KnowYourAgentsSection />
-      {/* Future sections like About Us, Contact can be added here */}
-      {/* 
-      <section id="about" className="py-16 bg-secondary/50 text-center">
-        <h2 className="text-3xl font-bold">About Higgs Estate</h2>
-        <p className="mt-4 text-lg text-muted-foreground">More info soon...</p>
-      </section>
-      <section id="contact" className="py-16 text-center">
-        <h2 className="text-3xl font-bold">Contact Us</h2>
-        <p className="mt-4 text-lg text-muted-foreground">Get in touch...</p>
-      </section>
-      */}
+
       <AiRecommendationsDialog
         isOpen={isAiDialogOpen}
         onClose={handleCloseAiDialog}

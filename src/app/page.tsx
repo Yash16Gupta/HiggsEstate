@@ -1,15 +1,16 @@
+import { getResidentialProperties, getCommercialProperties, getPreRentedProperties } from '@/data/mockProperties';
 import HomePageClient from '@/components/HomePageClient';
-import { getResidentialProperties, getCommercialProperties } from '@/data/mockProperties';
 
-export default async function Home() {
-  // Fetch properties on the server
-  const residentialProperties = await getResidentialProperties();
-  const commercialProperties = await getCommercialProperties();
+export default async function HomePage() {
+  const residential = await getResidentialProperties();
+  const commercial = await getCommercialProperties();
+  const preRented = await getPreRentedProperties();
 
   return (
-    <HomePageClient 
-      residentialProperties={residentialProperties} 
-      commercialProperties={commercialProperties} 
+    <HomePageClient
+      residentialProperties={residential}
+      commercialProperties={commercial}
+      preRentedProperties={preRented}
     />
   );
 }

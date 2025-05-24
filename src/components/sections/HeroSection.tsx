@@ -14,7 +14,7 @@ const HeroSection = () => {
           Discover Your <span className="text-primary">Perfect Property</span>
         </h1>
         <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground">
-          Higgs Estate offers an exclusive selection of residential and commercial properties.
+          Higgs Estate offers an exclusive selection of residential, commercial and prerented properties.
           Let us help you find the space that defines your future.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -23,6 +23,9 @@ const HeroSection = () => {
           </Button>
           <Button size="lg" variant="outline" asChild className="shadow-lg hover:shadow-xl transition-shadow">
             <Link href="#commercial">Explore Commercial Spaces</Link>
+          </Button>
+          <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-shadow">
+            <Link href="#prerented">View PreRented Properties</Link>
           </Button>
         </div>
       </div>

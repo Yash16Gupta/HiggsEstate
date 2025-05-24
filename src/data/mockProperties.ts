@@ -1,17 +1,20 @@
+type PropertyType = 'residential' | 'commercial' | 'pre-rented';
+
 export interface Property {
   id: string;
   name: string;
   description: string;
   price: number;
   location: string;
-  type: 'residential' | 'commercial';
+  type: PropertyType;
   imageUrls: string[];
   sqft: number;
-  bedrooms?: number; // Optional, for residential
-  bathrooms?: number; // Optional, for residential
-  amenities?: string[]; // For commercial or luxury residential
+  bedrooms?: number;
+  bathrooms?: number;
+  amenities?: string[];
   contactInfo: string;
 }
+
 
 const mockResidentialProperties: Property[] = [
   {
@@ -146,8 +149,65 @@ export const getCommercialProperties = async (): Promise<Property[]> => {
   return new Promise(resolve => setTimeout(() => resolve(mockCommercialProperties), 200));
 };
 
+export const getPreRentedProperties = async (): Promise<Property[]> => {
+  return new Promise(resolve => setTimeout(() => resolve(mockPreRentedProperties), 200));
+};
+
 export const getAllProperties = async (): Promise<Property[]> => {
   const residential = await getResidentialProperties();
   const commercial = await getCommercialProperties();
-  return [...residential, ...commercial];
+  const preRented = await getPreRentedProperties();
+  return [...residential, ...commercial, ...preRented];
 };
+
+
+const mockPreRentedProperties: Property[] = [
+  {
+    id: 'pre1',
+    name: 'Pre-Rented IT Office',
+    description: 'Fully leased IT office with MNC tenant. Located in a prime tech park with excellent connectivity.',
+    price: 22000000,
+    location: 'Tech Park, Bengaluru',
+    type: 'pre-rented',
+    imageUrls: ['https://placehold.co/600x400.png?text=Pre-Rented+Office+1'],
+    sqft: 6000,
+    contactInfo: 'invest@higgsestate.com',
+    amenities: ['MNC Tenant', 'Prime Location', 'High Rental Yield']
+  },
+  {
+    id: 'pre2',
+    name: 'Retail Space with Franchise Tenant',
+    description: 'Leased to a well-known food franchise with 7 years lock-in. Located on a high-footfall street.',
+    price: 18000000,
+    location: 'High Street, Mumbai',
+    type: 'pre-rented',
+    imageUrls: ['https://placehold.co/600x400.png?text=Pre-Rented+Retail'],
+    sqft: 2500,
+    contactInfo: 'invest@higgsestate.com',
+    amenities: ['Franchise Lease', '7-Year Lock-in', 'High Footfall']
+  },
+  {
+    id: 'pre3',
+    name: 'Warehouse with Corporate Lease',
+    description: '10-year leased warehouse for a logistics company. Located near national highway with excellent truck access.',
+    price: 30000000,
+    location: 'NH8, Jaipur',
+    type: 'pre-rented',
+    imageUrls: ['https://placehold.co/600x400.png?text=Pre-Rented+Warehouse'],
+    sqft: 15000,
+    contactInfo: 'invest@higgsestate.com',
+    amenities: ['10-Year Lease', 'Corporate Tenant', 'High Access Road']
+  },
+  {
+    id: 'pre4',
+    name: 'Warehouse with Corporate Lease010101',
+    description: '10-year leased warehouse for a logistics company. Located near national highway with excellent truck access.',
+    price: 30000000,
+    location: 'NH8, Jaipur',
+    type: 'pre-rented',
+    imageUrls: ['https://placehold.co/600x400.png?text=Pre-Rented+Warehouse'],
+    sqft: 15000,
+    contactInfo: 'invest@higgsestate.com',
+    amenities: ['10-Year Lease', 'Corporate Tenant', 'High Access Road']
+  }
+];

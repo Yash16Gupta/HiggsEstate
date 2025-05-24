@@ -13,7 +13,6 @@ interface PropertySectionProps {
 }
 
 const VISIBLE_CARD_WIDTH = 320;
-const CARD_MARGIN = 16;
 
 const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySectionProps) => {
   const limitedProperties = properties.slice(0, 3);
@@ -24,6 +23,13 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
   const showViewMore = currentIndex === limitedProperties.length - 1;
   const canGoNext = currentIndex < limitedProperties.length - 1;
 
+  const getPathByType = (type: Property['type']) => {
+    if (type === 'residential') return '/residential-properties';
+    if (type === 'commercial') return '/commercial-properties';
+    if (type === 'pre-rented') return '/pre-rented-properties';
+    return '/';
+  };
+
   const prev = () => {
     if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
   };
@@ -31,10 +37,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
   const next = () => {
     if (showViewMore) {
       const firstType = limitedProperties[0]?.type;
-      const path = firstType === 'residential'
-        ? '/residential-properties'
-        : '/commercial-properties';
-      router.push(path);
+      router.push(getPathByType(firstType));
     } else {
       setCurrentIndex(currentIndex + 1);
     }
@@ -72,6 +75,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
         </div>
 
         <div className="relative overflow-hidden flex items-center justify-center">
+          {/* Left Arrow */}
           <button
             onClick={prev}
             disabled={currentIndex === 0}
@@ -80,6 +84,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
             ◀
           </button>
 
+          {/* Cards Container */}
           <div className="flex items-center justify-center gap-4 w-full max-w-full px-2">
             {currentIndex > 0 &&
               renderCard(limitedProperties[currentIndex - 1], false, 'prev')}
@@ -102,10 +107,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
                 <button
                   onClick={() => {
                     const firstType = limitedProperties[0]?.type;
-                    const path = firstType === 'residential'
-                      ? '/residential-properties'
-                      : '/commercial-properties';
-                    router.push(path);
+                    router.push(getPathByType(firstType));
                   }}
                   className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-lg font-medium"
                 >
@@ -115,6 +117,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
             )}
           </div>
 
+          {/* Right Arrow */}
           <button
             onClick={next}
             disabled={!canGoNext}
