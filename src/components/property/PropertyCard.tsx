@@ -55,7 +55,7 @@ const PropertyCard = ({ property, onGetRecommendations, onViewDetails }: Propert
               variant={property.type === 'residential' ? 'default' : 'secondary'}
               className="capitalize text-xs"
             >
-              {property.type}
+              {'NEW'}
             </Badge>
           </div>
 

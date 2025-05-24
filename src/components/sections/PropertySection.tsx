@@ -1,4 +1,7 @@
+'use client';
+
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Property } from '@/data/mockProperties';
 import PropertyCard from '@/components/property/PropertyCard';
 
@@ -16,6 +19,7 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
   const limitedProperties = properties.slice(0, 3);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedProperty, setViewedProperty] = useState<Property | null>(null);
+  const router = useRouter();
 
   const showViewMore = currentIndex === limitedProperties.length - 1;
   const canGoNext = currentIndex < limitedProperties.length - 1;
@@ -26,7 +30,11 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
 
   const next = () => {
     if (showViewMore) {
-      window.location.href = '/view-more';
+      const firstType = limitedProperties[0]?.type;
+      const path = firstType === 'residential'
+        ? '/residential-properties'
+        : '/commercial-properties';
+      router.push(path);
     } else {
       setCurrentIndex(currentIndex + 1);
     }
@@ -92,7 +100,13 @@ const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySe
                 }}
               >
                 <button
-                  onClick={() => window.location.href = '/view-more'}
+                  onClick={() => {
+                    const firstType = limitedProperties[0]?.type;
+                    const path = firstType === 'residential'
+                      ? '/residential-properties'
+                      : '/commercial-properties';
+                    router.push(path);
+                  }}
                   className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-lg font-medium"
                 >
                   View More →
