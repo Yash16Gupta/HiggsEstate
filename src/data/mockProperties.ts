@@ -29,7 +29,7 @@ const mockResidentialProperties: Property[] = [
     amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
   },
   {
-    id: 'res1',
+    id: 'res2',
     name: 'Sunnyvale Family Home1111',
     description: 'A beautiful 4-bedroom, 3-bathroom family home in the heart of Sunnyvale. Features a large backyard, modern kitchen, and spacious living areas. Perfect for growing families.',
     price: 1200000,
@@ -43,7 +43,7 @@ const mockResidentialProperties: Property[] = [
     amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
   },
   {
-    id: 'res1',
+    id: 'res3',
     name: 'Sunnyvale Family Home222',
     description: 'A beautiful 4-bedroom, 3-bathroom family home in the heart of Sunnyvale. Features a large backyard, modern kitchen, and spacious living areas. Perfect for growing families.',
     price: 1200000,
@@ -57,7 +57,7 @@ const mockResidentialProperties: Property[] = [
     amenities: ['Large Backyard', 'Modern Kitchen', 'Two-car Garage']
   },
   {
-    id: 'res2',
+    id: 'res4',
     name: 'Downtown Loft Apartment',
     description: 'Chic 2-bedroom loft in a vibrant downtown location. Open concept living, exposed brick, and stunning city views. Close to restaurants, shops, and public transport.',
     price: 750000,
@@ -71,7 +71,7 @@ const mockResidentialProperties: Property[] = [
     amenities: ['City Views', 'Exposed Brick', 'Gym Access']
   },
   {
-    id: 'res3',
+    id: 'res5',
     name: 'Cozy Suburban Cottage',
     description: 'Charming 3-bedroom cottage with a lovely garden. Quiet neighborhood, recently renovated, and move-in ready. Ideal for first-time homebuyers or those looking to downsize.',
     price: 450000,
@@ -124,8 +124,8 @@ const mockCommercialProperties: Property[] = [
     amenities: ['Loading Docks', 'High Ceilings', 'Office Space']
   },
   {
-    id: 'com3',
-    name: 'Warehouse & Logistics Hub',
+    id: 'com4',
+    name: 'Warehouse & Logistics Hub010101010',
     description: 'Large warehouse with loading docks and excellent logistics access. High ceilings, ample storage space, and office area. Ideal for distribution or manufacturing.',
     price: 5000000, // Or lease price
     location: 'Industrial Zone, Port City',

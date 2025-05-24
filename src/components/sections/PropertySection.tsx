@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { Property } from '@/data/mockProperties';
 import PropertyCard from '@/components/property/PropertyCard';
 
@@ -9,125 +9,125 @@ interface PropertySectionProps {
   onSelectProperty: (property: Property) => void;
 }
 
-const VISIBLE_CARD_WIDTH = 320;  // Width of a single card in px, adjust as needed
-const CARD_MARGIN = 16;           // Margin between cards in px
-const MAX_VISIBLE_CARDS = 4;      // Show only 4 cards max
+const VISIBLE_CARD_WIDTH = 320;
+const CARD_MARGIN = 16;
 
 const PropertySection = ({ id, title, properties, onSelectProperty }: PropertySectionProps) => {
-  // Cap max index for sliding
-  const maxIndex = Math.min(properties.length, MAX_VISIBLE_CARDS) - 1;
+  const limitedProperties = properties.slice(0, 3);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [viewedProperty, setViewedProperty] = useState<Property | null>(null);
+
+  const showViewMore = currentIndex === limitedProperties.length - 1;
+  const canGoNext = currentIndex < limitedProperties.length - 1;
 
   const prev = () => {
-    setCurrentIndex((idx) => Math.max(idx - 1, 0));
+    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
   };
 
   const next = () => {
-    setCurrentIndex((idx) => Math.min(idx + 1, maxIndex));
+    if (showViewMore) {
+      window.location.href = '/view-more';
+    } else {
+      setCurrentIndex(currentIndex + 1);
+    }
   };
+
+  const renderCard = (property: Property, active: boolean, key: string) => (
+    <div
+      key={key}
+      className="w-full max-w-[500px]"
+      style={{
+        opacity: active ? 1 : 0.4,
+        transform: active ? 'scale(1.0)' : 'scale(0.9)',
+        transition: 'all 0.3s',
+        cursor: active ? 'pointer' : 'default',
+        pointerEvents: active ? 'auto' : 'none',
+      }}
+      onClick={() => active && onSelectProperty(property)}
+    >
+      <PropertyCard
+        property={property}
+        onGetRecommendations={() => {}}
+        onViewDetails={(property) => setViewedProperty(property)}
+      />
+    </div>
+  );
 
   return (
     <section id={id} className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-            {title}
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">{title}</h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             Browse our curated selection of {title.toLowerCase()}.
           </p>
         </div>
 
-        {properties.length > 0 ? (
-          <div className="relative overflow-hidden flex items-center justify-center">
-            {/* Left Arrow */}
-            <button
-              onClick={prev}
-              disabled={currentIndex === 0}
-              aria-label="Previous Property"
-              className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed`}
-            >
-              ◀
-            </button>
+        <div className="relative overflow-hidden flex items-center justify-center">
+          <button
+            onClick={prev}
+            disabled={currentIndex === 0}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            ◀
+          </button>
 
-            {/* Cards wrapper */}
-            <div
-              className="flex items-center justify-center space-x-4"
-              style={{
-                width: VISIBLE_CARD_WIDTH * 3 + CARD_MARGIN * 4,
-                overflow: 'visible',
-              }}
-            >
-              {/* Previous card */}
-              {currentIndex > 0 && (
-                <div
-                  style={{
-                    width: VISIBLE_CARD_WIDTH,
-                    opacity: 0.4,
-                    pointerEvents: 'none',
-                    transform: 'scale(0.9)',
-                    transition: 'opacity 0.3s, transform 0.3s',
-                  }}
-                  aria-hidden="true"
-                >
-                  <PropertyCard property={properties[currentIndex - 1]} onGetRecommendations={() => {}} />
-                </div>
-              )}
+          <div className="flex items-center justify-center gap-4 w-full max-w-full px-2">
+            {currentIndex > 0 &&
+              renderCard(limitedProperties[currentIndex - 1], false, 'prev')}
 
-              {/* Current card */}
+            {currentIndex < limitedProperties.length &&
+              renderCard(limitedProperties[currentIndex], true, 'current')}
+
+            {currentIndex + 1 < limitedProperties.length &&
+              renderCard(limitedProperties[currentIndex + 1], false, 'next')}
+
+            {showViewMore && (
               <div
                 style={{
                   width: VISIBLE_CARD_WIDTH,
-                  opacity: 1,
-                  cursor: 'pointer',
-                  transition: 'opacity 0.3s, transform 0.3s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
-                onClick={() => onSelectProperty(properties[currentIndex])}
               >
-                <PropertyCard property={properties[currentIndex]} onGetRecommendations={() => {}} />
-              </div>
-
-              {/* Next card */}
-              {currentIndex < maxIndex && (
-                <div
-                  style={{
-                    width: VISIBLE_CARD_WIDTH,
-                    opacity: 0.4,
-                    pointerEvents: 'none',
-                    transform: 'scale(0.9)',
-                    transition: 'opacity 0.3s, transform 0.3s',
-                  }}
-                  aria-hidden="true"
-                >
-                  <PropertyCard property={properties[currentIndex + 1]} onGetRecommendations={() => {}} />
-                </div>
-              )}
-
-              {/* View More button */}
-              {currentIndex === maxIndex && properties.length > MAX_VISIBLE_CARDS && (
                 <button
-                  onClick={() => window.location.href = '/view-more'} // Change this URL as needed
-                  className="ml-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                  onClick={() => window.location.href = '/view-more'}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-lg font-medium"
                 >
-                  View More
+                  View More →
                 </button>
-              )}
-            </div>
-
-            {/* Right Arrow */}
-            <button
-              onClick={next}
-              disabled={currentIndex === maxIndex}
-              aria-label="Next Property"
-              className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed`}
-            >
-              ▶
-            </button>
+              </div>
+            )}
           </div>
-        ) : (
-          <p className="text-center text-muted-foreground">No properties available in this section at the moment.</p>
-        )}
+
+          <button
+            onClick={next}
+            disabled={!canGoNext}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            ▶
+          </button>
+        </div>
       </div>
+
+      {/* Modal */}
+      {viewedProperty && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          onClick={() => setViewedProperty(null)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl max-w-5xl w-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PropertyCard
+              property={viewedProperty}
+              onGetRecommendations={() => {}}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
